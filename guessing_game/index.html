@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+
+    <title>Number guessing game</title>
+
+    <style>
+      html {
+        font-family: sans-serif;
+      }
+
+      body {
+        width: 50%;
+        max-width: 800px;
+        min-width: 480px;
+        margin: 0 auto;
+      }
+      
+      .form input[type="number"] {
+        width: 200px;
+      }
+
+      .lastResult {
+        color: white;
+        padding: 3px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <h1>Number guessing game</h1>
+
+    <p>We have selected a random number between 1 and 100. See if you can guess it in 10 turns or fewer. We'll tell you if your guess was too high or too low.</p>
+
+    <div class="form">
+      <label for="guessField">Enter a guess: </label>
+      <input type="number" min="1" max="100" required id="guessField" class="guessField">
+      <input type="submit" value="Submit guess" class="guessSubmit">
+    </div>
+
+    <div class="resultParas">
+      <p class="guesses"></p>
+      <p class="lastResult"></p>
+      <p class="lowOrHi"></p>
+    </div>
+
+    <script>
+        let randomNumber = Math.floor(Math.random() * 100) + 1;
+        console.log(randomNumber);
+        let guesses = document.querySelector('.guesses');
+        let lastResult = document.querySelector('.lastResult');
+        let lowOrHi = document.querySelector('.lowOrHi');
+        let guessSubmit = document.querySelector('.guessSubmit');
+        let guessField = document.querySelector('.guessField');
+       
+        let guessCount = 1;
+        let resetButton;
+
+        function checkGuess() {
+            let userGuess = Number(guessField.value);
+            if (guessCount === 1) {
+                guesses.textContent = 'Previous guesses: ';
+            } guesses.textContent += userGuess + ' '; //checking if user guess is same as random number
+            if (userGuess === randomNumber) {
+            lastResult.textContent = 'Congratulations! You got it right!'; //going into css and changing backgroundcover through JS
+            lastResult.style.backgroundColor = 'green';
+            lowOrHi.textContent = '';
+            setGameOver();
+            } else if (guessCount === 10) { 
+                lastResult.textContent = '!!!GAME OVER!!!';
+                lastResult.style.backgroundColor = 'red';
+                lowOrHi.textContent = '';
+                setGameOver();
+            } else {
+                    lastResult.textContent = 'Wrong!';
+                    lastResult.style.backgroundColor = 'red'; //change css to red 
+                    if(userGuess < randomNumber) {
+                    lowOrHi.textContent = 'Last guess was too low!'; //tell user guess to low
+                    }
+                    else if (userGuess > randomNumber){
+                        lowOrHi.textContent = 'Last guess was too high!';
+                    }
+                }
+                guessCount++; //increment of guesses
+                guessField.value = '';
+                guessField.focus();
+            }
+        guessSubmit.addEventListener('click', checkGuess); // makes submit button work
+        
+        function setGameOver() {
+            guessField.disabled = true; //user cant type in guess box
+            guessSubmit.disabled = true; // user cant access submit button
+            resetButton = document.createElement('button'); //adding reset button /appears, adds button to html
+            resetButton.textContent = 'Start new game'; //adding text to created button
+            document.body.appendChild(resetButton); // when creating an element, have to add append child/ adds JS functionality to document
+            resetButton.addEventListener('click', resetGame); //event listener for reset button 
+            }
+        function resetGame() {
+            guessCount = 1; // resets guess count to one
+            const resetParas = document.querySelectorAll('.resultParas p'); //clears all p tags within this class
+            for (const resetPara of resetParas) { // iterating through each p element within .resultParas
+                resetPara.textContent = ''; //making each text blank
+            }
+            resetButton.parentNode.removeChild(resetButton); // Removes HTML element (see child)
+            guessField.disabled = false; //re-nables our guessField
+            guessSubmit.disabled = false; // re-enables submit button
+            guessField.value = ''; // erasing any text in guess box
+            guessField.focus(); //setting the focus to the text box
+            lastResult.style.backgroundColor = 'white'; //clearing former guesses
+            randomNumber = Math.floor(Math.random() * 100) + 1; // giving a new randow number
+                }
+
+      // Your JavaScript goes here
+
+    </script>
+  </body>
+</html>
